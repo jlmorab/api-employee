@@ -22,7 +22,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "cat_employee")
-public class EmployeeEntity {
+public class Employee {
 
 	@Id
 	@Column(name = "emp_id")

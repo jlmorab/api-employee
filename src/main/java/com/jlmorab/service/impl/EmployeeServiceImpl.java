@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.jlmorab.data.dto.WebResponseDTO;
-import com.jlmorab.data.entity.EmployeeEntity;
+import com.jlmorab.data.entity.Employee;
 import com.jlmorab.exception.LogicException;
 import com.jlmorab.repository.IEmployeeRepository;
 import com.jlmorab.service.IEmployeeService;
@@ -32,7 +32,7 @@ public class EmployeeServiceImpl extends ServiceAbstract implements IEmployeeSer
 	@Override
 	public WebResponseDTO getById(HttpServletResponse response, Integer id) {
 		return executeFlow( response, log, () -> {
-			Optional<EmployeeEntity> found = repository.findById( id );
+			Optional<Employee> found = repository.findById( id );
 			
 			if( !found.isPresent() ) {
 				throw new LogicException("Employee not found", HttpStatus.NOT_FOUND);
@@ -43,14 +43,14 @@ public class EmployeeServiceImpl extends ServiceAbstract implements IEmployeeSer
 	}//end getById()
 	
 	@Override
-	public WebResponseDTO add(HttpServletResponse response, List<EmployeeEntity> employees) {
+	public WebResponseDTO add(HttpServletResponse response, List<Employee> employees) {
 		return executeFlow( response, log, () -> repository.saveAll(employees) );
 	}//end add()
 
 	@Override
-	public WebResponseDTO update(HttpServletResponse response, Integer id, EmployeeEntity employee) {
+	public WebResponseDTO update(HttpServletResponse response, Integer id, Employee employee) {
 		return executeFlow( response, log, () -> {
-			Optional<EmployeeEntity> found = repository.findById( id );
+			Optional<Employee> found = repository.findById( id );
 			
 			if( !found.isPresent() ) {
 				throw new LogicException("Employee not found", HttpStatus.NOT_FOUND);
