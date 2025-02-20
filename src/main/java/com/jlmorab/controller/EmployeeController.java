@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jlmorab.data.dto.WebResponseDTO;
-import com.jlmorab.data.entity.EmployeeEntity;
+import com.jlmorab.data.entity.Employee;
 import com.jlmorab.service.IEmployeeService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,7 +39,7 @@ public class EmployeeController {
 
 	@PostMapping("add")
 	public WebResponseDTO add( 
-			@RequestBody List<EmployeeEntity> employees, 
+			@RequestBody List<Employee> employees, 
 			HttpServletResponse response ) {
 		return service.add(response, employees);
 	}//end add()
@@ -47,7 +47,7 @@ public class EmployeeController {
 	@PutMapping("update/{id}")
 	public WebResponseDTO update( 
 			@PathVariable Integer id, 
-			@RequestBody EmployeeEntity employee, 
+			@RequestBody Employee employee, 
 			HttpServletResponse response ) {
 		return service.update(response, id, employee);
 	}//end update()
