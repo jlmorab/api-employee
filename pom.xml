@@ -23,6 +23,14 @@
 			<email>jlmorab@hotmail.com</email>
 		</developer>
 	</developers>
+	
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub jlmorab Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/jlmorab/api-rest-example</url>
+		</repository>
+	</distributionManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
