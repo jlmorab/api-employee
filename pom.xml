@@ -13,7 +13,7 @@
 
 	<groupId>com.jlmorab</groupId>
 	<artifactId>api-rest-example</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<name>api-rest-example</name>
 	<description>REST service example</description>
 
@@ -23,6 +23,14 @@
 			<email>jlmorab@hotmail.com</email>
 		</developer>
 	</developers>
+	
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub jlmorab Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/jlmorab/api-rest-example</url>
+		</repository>
+	</distributionManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,6 +43,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
 		<dependency>
