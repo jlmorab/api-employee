@@ -44,7 +44,7 @@ public class TestData {
 	public static Employee employee() {
 		int random = TestData.getRandom(1, 1000);
 		String text = String.format("data%d", random);
-		return new Employee(random, text, text, text, LocalDate.now(), "M");
+		return new Employee(random, text, text, text, LocalDate.now().minusYears( (long) TestData.getRandom(18, 65) ), "M");
 	}//end employee()
 	
 	public static List<Employee> employees() {

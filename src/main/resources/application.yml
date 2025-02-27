@@ -20,6 +20,13 @@ spring:
       poolName: SpringBootJPAHikariCP
       maxLifetime: 1800000
       connectionTimeout: 120000
+      
+  mvc:
+     throw-exception-if-no-handler-found: true
+  web:
+     resources:
+        add-mappings: false
+  
   sql:
     init:
       encoding: UTF-8

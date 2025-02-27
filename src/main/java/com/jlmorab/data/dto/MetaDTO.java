@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(Include.NON_DEFAULT)
+@JsonInclude(Include.NON_NULL)
 public class MetaDTO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -30,7 +30,7 @@ public class MetaDTO implements Serializable {
     private final String timestamp = LocalDateTime.now().toString();
     private final String transactionID = UUID.randomUUID().toString();
     private List<String> messages;
-    private boolean rollback;
+    private Boolean rollback;
     
     public MetaDTO( HttpStatus httpStatus ) {
     	this.status = httpStatus.name();
