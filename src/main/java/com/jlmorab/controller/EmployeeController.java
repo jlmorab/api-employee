@@ -2,6 +2,7 @@ package com.jlmorab.controller;
 
 import java.util.List;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +17,10 @@ import com.jlmorab.data.entity.Employee;
 import com.jlmorab.service.IEmployeeService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Validated
 @RestController
 @RequestMapping("/employee")
 @RequiredArgsConstructor
@@ -39,7 +42,7 @@ public class EmployeeController {
 
 	@PostMapping("add")
 	public WebResponseDTO add( 
-			@RequestBody List<Employee> employees, 
+			@Valid @RequestBody List<Employee> employees, 
 			HttpServletResponse response ) {
 		return service.add(response, employees);
 	}//end add()
@@ -47,7 +50,7 @@ public class EmployeeController {
 	@PutMapping("update/{id}")
 	public WebResponseDTO update( 
 			@PathVariable Integer id, 
-			@RequestBody Employee employee, 
+			@Valid @RequestBody Employee employee, 
 			HttpServletResponse response ) {
 		return service.update(response, id, employee);
 	}//end update()
