@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.jlmorab.config.WebSecurityConfig;
 import com.jlmorab.data.TestData;
 import com.jlmorab.data.entity.Employee;
 import com.jlmorab.service.IEmployeeService;
@@ -33,6 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @SuppressWarnings("unchecked")
 @WebMvcTest(EmployeeController.class)
 @AutoConfigureMockMvc
+@Import(WebSecurityConfig.class)
 class EmployeeControllerTest {
 	
 	private static final Integer ANY_INT 	= TestData.getRandom(1, 1000);
