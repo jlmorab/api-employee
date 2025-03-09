@@ -3,6 +3,12 @@ server:
   servlet:
      context-path: /api/v1/jlmorab
 
+app:
+  config:
+    actuator:
+      db:
+        execute-query: true
+
 spring:
   config:
     import: secrets.yml
@@ -29,3 +35,13 @@ spring:
     properties:
       hibernate:
         ddl-auto: none
+
+management:
+  endpoint:
+    health:
+      show-details: always
+      probes:
+         enabled: true
+  health:
+    db:
+      enabled: false
