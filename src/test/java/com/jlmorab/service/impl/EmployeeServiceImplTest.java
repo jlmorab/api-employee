@@ -14,7 +14,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,6 @@ import com.jlmorab.data.TestData;
 import com.jlmorab.data.dto.MetaDTO;
 import com.jlmorab.data.dto.WebResponseDTO;
 import com.jlmorab.data.entity.Employee;
-import com.jlmorab.repository.IEmployeeRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -44,7 +42,7 @@ class EmployeeServiceImplTest {
 	EmployeeServiceImpl service;
 	
 	@Mock
-	IEmployeeRepository repository;
+	EmployeeServiceCacheableImpl serviceCache;
 	
 	@Mock
 	HttpServletResponse httpResponse;
@@ -52,7 +50,7 @@ class EmployeeServiceImplTest {
 	
 	@BeforeEach
 	void setUp() {
-		reset( repository, httpResponse );
+		reset( serviceCache, httpResponse );
 	}//end sertUp()
 	
 	
@@ -60,7 +58,7 @@ class EmployeeServiceImplTest {
 	void getEmployees_whenRecordExists() {
 		List<Employee> expected = TestData.employees();
 		
-		when( repository.findAll() ).thenReturn( expected );
+		when( serviceCache.getAllEmployees() ).thenReturn( expected );
 		
 		WebResponseDTO actual = service.getAll( httpResponse );
 		
@@ -72,7 +70,7 @@ class EmployeeServiceImplTest {
 	void getEmployeeById_whenExist() {
 		Employee expected = TestData.employee();
 		
-		when( repository.findById(anyInt()) ).thenReturn( Optional.of(expected) );
+		when( serviceCache.getEmployeeById(anyInt()) ).thenReturn( expected );
 		
 		WebResponseDTO actual = service.getById(httpResponse, ANY_INT);
 		
@@ -82,7 +80,7 @@ class EmployeeServiceImplTest {
 	
 	@Test
 	void getEmployeeById_whenNotExist() {
-		when( repository.findById(anyInt()) ).thenReturn( Optional.empty() );
+		when( serviceCache.getEmployeeById(anyInt()) ).thenReturn( null );
 		
 		WebResponseDTO actual = service.getById(httpResponse, ANY_INT);
 		
@@ -90,17 +88,8 @@ class EmployeeServiceImplTest {
 	}//end getEmployeeById_whenNotExist()
 	
 	@Test
-	void getEmployeeById_whenIdIsntProvided() {
-		when( repository.findById(null) ).thenThrow( new IllegalArgumentException() );
-		
-		WebResponseDTO actual = service.getById(httpResponse, null);
-		
-		validateResponse( actual, HttpStatus.BAD_REQUEST );
-	}//end getEmployeeById_whenIdIsntProvided()
-	
-	@Test
 	void getEmployeeById_whenThrowException() {
-		when( repository.findById(anyInt()) ).thenThrow( TEST_EXCEPTION );
+		when( serviceCache.getEmployeeById(anyInt()) ).thenThrow( TEST_EXCEPTION );
 		
 		WebResponseDTO actual = service.getById(httpResponse, ANY_INT);
 		
@@ -111,7 +100,9 @@ class EmployeeServiceImplTest {
 	void addEmployees_whenSavedCorrectly() {
 		List<Employee> expected = TestData.employees();
 		
-		when( repository.saveAll(any(List.class)) ).thenReturn( expected );
+		expected.forEach( employee -> {
+			when( serviceCache.addEmployee(employee) ).thenReturn( employee );
+		});
 		
 		WebResponseDTO actual = service.add( httpResponse, expected );
 		
@@ -124,8 +115,8 @@ class EmployeeServiceImplTest {
 		Employee request = TestData.employee();
 		Employee found = TestData.employee();
 		
-		when( repository.findById(anyInt()) ).thenReturn( Optional.of(found) );
-		when( repository.save(any()) ).thenReturn(found);
+		when( serviceCache.getEmployeeById(anyInt()) ).thenReturn( found );
+		when( serviceCache.addEmployee(any()) ).thenReturn(found);
 		
 		WebResponseDTO actual = service.update( httpResponse, ANY_INT, request );
 		
@@ -138,7 +129,7 @@ class EmployeeServiceImplTest {
 	void updateEmployee_whenNotExist() {
 		Employee request = TestData.employee();
 		
-		when( repository.findById(anyInt()) ).thenReturn( Optional.empty() );
+		when( serviceCache.getEmployeeById(anyInt()) ).thenReturn( null );
 		
 		WebResponseDTO actual = service.update( httpResponse, ANY_INT, request );
 		
@@ -149,7 +140,7 @@ class EmployeeServiceImplTest {
 	void deleteEmployee_whenDeletedCorrectly() {
 		Boolean expected = true;
 		
-		when( repository.deleteEmployeeById(anyInt()) ).thenReturn( expected );
+		when( serviceCache.deleteEmployeeById(anyInt()) ).thenReturn( expected );
 		
 		WebResponseDTO actual = service.delete( httpResponse, ANY_INT );
 		
@@ -161,13 +152,14 @@ class EmployeeServiceImplTest {
 	void deleteEmployee_whenCantDelete() {
 		Boolean expected = false;
 		
-		when( repository.deleteEmployeeById(anyInt()) ).thenReturn( expected );
+		when( serviceCache.deleteEmployeeById(anyInt()) ).thenReturn( expected );
 		
 		WebResponseDTO actual = service.delete( httpResponse, ANY_INT );
 		
 		boolean data = (boolean) obtainData( actual, HttpStatus.OK );
 		assertFalse( data );
 	}//end deleteEmployee_whenCantDelete()
+	
 	
 	private boolean validateResponse( WebResponseDTO response, HttpStatus httpStatus ) {
 		boolean result = false;
