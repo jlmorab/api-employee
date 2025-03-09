@@ -1,7 +1,6 @@
 package com.jlmorab.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.jlmorab.data.dto.WebResponseDTO;
 import com.jlmorab.data.entity.Employee;
 import com.jlmorab.exception.LogicException;
-import com.jlmorab.repository.IEmployeeRepository;
 import com.jlmorab.service.IEmployeeService;
 import com.jlmorab.service.ServiceAbstract;
 
@@ -21,51 +19,54 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl extends ServiceAbstract implements IEmployeeService {
+	
+    private final EmployeeServiceCacheableImpl service;
 
-	private final IEmployeeRepository repository;
-
-	@Override
 	public WebResponseDTO getAll(HttpServletResponse response) {
-		return executeFlow( response, log, () -> repository.findAll() );
+		return executeFlow( response, log, () -> service.getAllEmployees() );
 	}//end getAll()
 
 	@Override
 	public WebResponseDTO getById(HttpServletResponse response, Integer id) {
 		return executeFlow( response, log, () -> {
-			Optional<Employee> found = repository.findById( id );
+			Employee found = service.getEmployeeById( id );
 			
-			if( !found.isPresent() ) {
+			if( found == null ) {
 				throw new LogicException("Employee not found", HttpStatus.NOT_FOUND);
 			} else {
-				return found.get();
+				return found;
 			}//end if
 		});
 	}//end getById()
 	
 	@Override
 	public WebResponseDTO add(HttpServletResponse response, List<Employee> employees) {
-		return executeFlow( response, log, () -> repository.saveAll(employees) );
+		return executeFlow( response, log, () ->
+			employees.stream()
+				.map(service::addEmployee)
+				.toList()
+		);
 	}//end add()
 
 	@Override
 	public WebResponseDTO update(HttpServletResponse response, Integer id, Employee employee) {
 		return executeFlow( response, log, () -> {
-			Optional<Employee> found = repository.findById( id );
+			Employee found = service.getEmployeeById( id );
 			
-			if( !found.isPresent() ) {
+			if( found == null ) {
 				throw new LogicException("Employee not found", HttpStatus.NOT_FOUND);
 			}//end if
 			
 			employee.setEmpId(id);
 			
-			repository.save(employee);
+			service.addEmployee( employee );
 			return true;
 		});
 	}//end update()
 
 	@Override
 	public WebResponseDTO delete(HttpServletResponse response, Integer id) {
-		return executeFlow( response, log, () -> repository.deleteEmployeeById(id) );
+		return executeFlow( response, log, () -> service.deleteEmployeeById(id) );
 	}//end delete()
 	
 }
